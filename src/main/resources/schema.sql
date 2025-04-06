@@ -1,0 +1,76 @@
+-- Users Table
+CREATE TABLE IF NOT EXISTS users (
+    id VARCHAR(24) PRIMARY KEY,
+    name VARCHAR NOT NULL,
+    mobile_number VARCHAR(15) NOT NULL UNIQUE,
+    password TEXT NOT NULL,
+    profile_image_url TEXT DEFAULT NULL,
+    created_on TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  	updated_on TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Account Activity Table
+CREATE TABLE IF NOT EXISTS account_activity (
+    id VARCHAR(24) PRIMARY KEY,
+    user_id VARCHAR(24) NOT NULL REFERENCES users(id),
+    token TEXT DEFAULT NULL,
+    otp INTEGER DEFAULT NULL,
+    created_on TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  	updated_on TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Chats Table
+CREATE TABLE IF NOT EXISTS chats (
+    id VARCHAR(24) PRIMARY KEY,
+    is_group BOOLEAN NOT NULL,
+    created_on TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  	updated_on TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Chat Members Table
+CREATE TABLE IF NOT EXISTS chat_members (
+    id VARCHAR(24) PRIMARY KEY,
+    chat_id VARCHAR(24) NOT NULL REFERENCES chats(id),
+    user_id VARCHAR(24) NOT NULL REFERENCES users(id),
+    created_on TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  	updated_on TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Chat Groups Table
+CREATE TABLE IF NOT EXISTS chat_groups (
+    id VARCHAR(24) PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    group_image_url TEXT DEFAULT NULL,
+    chat_id VARCHAR(24) NOT NULL REFERENCES chats(id),
+    send_message_permission INTEGER NOT NULL,
+    created_on TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  	updated_on TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Group Users Table
+CREATE TABLE IF NOT EXISTS group_users (
+    id VARCHAR(24) PRIMARY KEY,
+    group_id VARCHAR(24) NOT NULL REFERENCES chat_groups(id),
+    user_id VARCHAR(24) NOT NULL REFERENCES users(id),
+    user_role INTEGER NOT NULL,
+    created_on TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  	updated_on TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Conversation Table
+CREATE TABLE IF NOT EXISTS conversation (
+    id VARCHAR(24) PRIMARY KEY,
+    chat_id VARCHAR(24) NOT NULL REFERENCES chats(id),
+    message TEXT,
+    sender VARCHAR(24) NOT NULL REFERENCES users(id),
+    created_on TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  	updated_on TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+--DROP TABLE conversation;
+--DROP TABLE group_users;
+--DROP TABLE chat_groups;
+--DROP TABLE chat_members;
+--DROP TABLE chats;
+--DROP TABLE account_activity;
+--DROP TABLE users;
