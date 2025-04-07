@@ -21,8 +21,8 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if(handler instanceof HandlerMethod handlerMethod
-        		&& handlerMethod.getMethodAnnotation(AuthenticationRequired.class) == null) {
+        if(!(handler instanceof HandlerMethod handlerMethod)
+        		|| handlerMethod.getMethodAnnotation(AuthenticationRequired.class) == null) {
         	return true;
         }
         return handleAuthorization(request);
@@ -47,8 +47,8 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     }
 
     private String getAuthorizationToken(String authHeader) {
-        if(StringUtils.isBlank(authHeader) && !authHeader.startsWith("Bearer ")) {
-        	LOGGER.debug("auth header is null");
+        if(StringUtils.isBlank(authHeader) || !authHeader.startsWith("Bearer ")) {
+        	LOGGER.debug("auth header is null or not bearer token");
             return null;
         }
         String[] basicTokens = authHeader.split("\\s");

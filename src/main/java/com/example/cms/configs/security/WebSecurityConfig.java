@@ -20,7 +20,15 @@ public class WebSecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.csrf(AbstractHttpConfigurer::disable)
 				.authorizeHttpRequests(
-						auth -> auth.requestMatchers("/api/healthcheck", "/api/auth/login", "/api/auth/register")
+						auth -> auth.requestMatchers(
+								"/api/healthcheck",
+					            "/api/auth/login",
+					            "/api/auth/register",
+					            "/swagger-ui/**",            // UI static assets
+					            "/v3/api-docs/**",           // OpenAPI docs
+					            "/swagger-ui.html",          // Main HTML
+					            "/webjars/**"           
+								)
 						.permitAll().anyRequest().authenticated())
 				.addFilterBefore(new ApiKeyFilter(requiredApiKey), UsernamePasswordAuthenticationFilter.class);
 		return http.build();

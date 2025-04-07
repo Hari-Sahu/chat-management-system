@@ -18,20 +18,53 @@ import com.example.cms.dto.requests.UserRegistrationRequest;
 import com.example.cms.dto.responses.AppResponse;
 import com.example.cms.services.AuthenticationService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/auth")
+@Tag(name = "Auth APIs", description = "Authentication related endpoints")
 public class AuthController extends TokenAuthenticationController {
 
 	@Autowired
 	private AuthenticationService authService;
 	
+	@Operation(summary = "Register a new user",
+			parameters = {
+		            @Parameter(
+		                name = "X-API-KEY",
+		                in = ParameterIn.HEADER,
+		                required = true,
+		                description = "API key for access"
+		            )
+		        })
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "User registered successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid input or mobile already exists")
+    })
 	@PostMapping("/register")
 	public ResponseEntity<AppResponse> register(@Valid @RequestBody UserRegistrationRequest dto) {
 		return ResponseEntity.ok(authService.registerUser(dto));
 	}
 
+	@Operation(summary = "Login with mobile and password",
+			parameters = {
+		            @Parameter(
+		                name = "X-API-KEY",
+		                in = ParameterIn.HEADER,
+		                required = true,
+		                description = "API key for access"
+		            )
+		        })
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Login successful with token"),
+        @ApiResponse(responseCode = "401", description = "Invalid credentials")
+    })
 	@PostMapping("/login")
 	public ResponseEntity<Object> login(@Valid @RequestBody LoginRequest dto) {
 		String token = authService.login(dto.getMobileNumber(), dto.getPassword());
@@ -45,6 +78,19 @@ public class AuthController extends TokenAuthenticationController {
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
 	}
 	
+	@Operation(summary = "Logout by deleting token",
+			parameters = {
+		            @Parameter(
+		                name = "X-API-KEY",
+		                in = ParameterIn.HEADER,
+		                required = true,
+		                description = "API key for access"
+		            )
+		        })
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Logged out successfully"),
+        @ApiResponse(responseCode = "401", description = "Unauthorized or token missing")
+    })
 	@PostMapping("/logout")
 	@AuthenticationRequired
     public ResponseEntity<String> logout() {
