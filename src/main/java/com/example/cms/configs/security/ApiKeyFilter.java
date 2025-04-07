@@ -1,4 +1,4 @@
-package com.example.cms.configs;
+package com.example.cms.configs.security;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -29,7 +29,7 @@ public class ApiKeyFilter extends OncePerRequestFilter {
 	      response.getWriter().write("Invalid API key");
 	      return;
 	    }
-	    
+	    	    
 	    // Set authentication in context to avoid "pre-auth" error
         Authentication auth = new UsernamePasswordAuthenticationToken(requiredApiKey, null, Collections.emptyList());
         SecurityContextHolder.getContext().setAuthentication(auth);

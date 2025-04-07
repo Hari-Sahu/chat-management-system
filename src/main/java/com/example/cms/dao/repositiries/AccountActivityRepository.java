@@ -11,9 +11,7 @@ import com.example.cms.dao.entities.User;
 @Repository
 public interface AccountActivityRepository extends JpaRepository<AccountActivity, String> {
     
-    // Optional: Find all activities by user ID
 	Optional<AccountActivity> findByUser(User userId);
 
-    // Optional: Get latest activity by user
-    AccountActivity findTopByUser_IdOrderByCreatedOnDesc(String userId);
+	Optional<AccountActivity> findByToken(String token);
 }

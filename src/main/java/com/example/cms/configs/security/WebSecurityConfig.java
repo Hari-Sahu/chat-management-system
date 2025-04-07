@@ -1,4 +1,4 @@
-package com.example.cms.configs;
+package com.example.cms.configs.security;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -20,7 +20,8 @@ public class WebSecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.csrf(AbstractHttpConfigurer::disable)
 				.authorizeHttpRequests(
-						auth -> auth.requestMatchers("/api/auth/**").permitAll().anyRequest().authenticated())
+						auth -> auth.requestMatchers("/api/healthcheck", "/api/auth/login", "/api/auth/register")
+						.permitAll().anyRequest().authenticated())
 				.addFilterBefore(new ApiKeyFilter(requiredApiKey), UsernamePasswordAuthenticationFilter.class);
 		return http.build();
 	}

@@ -1,4 +1,4 @@
-package com.example.cms.configs;
+package com.example.cms.configs.security;
 
 import java.io.IOException;
 

@@ -26,6 +26,13 @@ public class CMSExceptionHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(CMSExceptionHandler.class);
 	
+	@ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<AppResponse> handleAuthentication(AuthenticationException ex) {
+		AppResponse resp = new AppResponse();
+		resp.setError(new ErrorResponse(ex.getErrorCode(), ex.getDescription()));
+		return ResponseEntity.badRequest().body(resp);
+    }
+	
 	@ExceptionHandler(value= {ServiceException.class, AppException.class})
 	public AppResponse handleServiceException(HttpServletRequest request, HttpServletResponse response, ServiceException ae) {
 		AppResponse resp = new AppResponse();

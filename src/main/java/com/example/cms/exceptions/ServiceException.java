@@ -19,12 +19,12 @@ public class ServiceException extends RuntimeException {
 		this.errorCode = errorCode.getErrorCode();
 	}
 	
-	protected ServiceException(String code, int errorCode, String message, Object... params) {
+	public ServiceException(String code, int errorCode, String message, Object... params) {
 		super(String.format(message, params));
 		this.code = code;
 		this.errorCode = errorCode;
 	}
-
+	
 	public String getCode() {
 		return code;
 	}
