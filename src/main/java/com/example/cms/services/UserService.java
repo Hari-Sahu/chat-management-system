@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.example.cms.dao.entities.User;
 import com.example.cms.dao.repositiries.UserRepository;
 import com.example.cms.dto.requests.UserRegistrationRequest;
+import com.example.cms.dto.responses.UserDetailsDTO;
 import com.example.cms.exceptions.ServiceErrorCodes;
 import com.example.cms.exceptions.ServiceException;
 import com.example.cms.utils.AESUtil;
@@ -32,16 +33,35 @@ public class UserService {
 	}
 	
     public User getUser(String id) {
-        return userRepository.findById(id).orElseThrow();
+        return userRepository.findById(id)
+        		.orElseThrow(() -> new ServiceException(ServiceErrorCodes.DATA_NOT_FOUND, "User"));
     }
     
     public Optional<User> getUserByMobile(String mobile) {
         return userRepository.findByMobile(mobile);
     }
+    
+    public User getUserByMobileNumber(String mobile) {
+        return userRepository.findByMobile(mobile)
+        		.orElseThrow(() -> new ServiceException(ServiceErrorCodes.DATA_NOT_FOUND, "User"));
+    }
+    
+    public UserDetailsDTO getUserDetails(User user) {
+        return mapToDTO(user);
+    }
 
-    public User updateUser(String id, User user) {
-        User existing = getUser(id);
-        existing.setName(user.getName());
-        return userRepository.save(existing);
-    }    
+    public UserDetailsDTO updateUser(User user, String name) {
+    	user.setName(name);
+        userRepository.save(user);
+        return mapToDTO(user);
+    }
+    
+    private UserDetailsDTO mapToDTO(User user) {
+    	UserDetailsDTO dto = new UserDetailsDTO();
+        dto.setId(user.getId());
+        dto.setMobile(user.getMobile());
+        dto.setName(user.getName());
+        dto.setProfileImageURL(user.getProfileImageURL());
+        return dto;
+    }
 }

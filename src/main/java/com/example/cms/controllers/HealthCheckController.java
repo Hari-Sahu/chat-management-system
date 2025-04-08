@@ -15,7 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Healthcheck API")
 public class HealthCheckController {
 
-	@Operation(
+	@Operation(summary = "Verify the availability and basic health status of the application",
 	        parameters = {
 	            @Parameter(
 	                name = "X-API-KEY",

@@ -1,5 +1,10 @@
 package com.example.cms.dto.requests;
 
+import org.apache.commons.lang3.StringUtils;
+
+import com.example.cms.exceptions.AppErrorCodes;
+import com.example.cms.exceptions.AppException;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -50,5 +55,10 @@ public class UserRegistrationRequest {
 
     public void setProfileImageURL(String profileImageURL) {
         this.profileImageURL = profileImageURL;
+    }
+    
+    public void validateForUpdate() {
+    	if(StringUtils.isBlank(name))
+    		throw new AppException(AppErrorCodes.PARAMETER_MISSING, "name");
     }
 }

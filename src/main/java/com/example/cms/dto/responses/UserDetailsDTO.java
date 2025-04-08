@@ -9,6 +9,7 @@ public class UserDetailsDTO extends AppResponse {
 	private String id;
 	private String mobile;
 	private String name;
+	private String profileImageURL;
 	
 	public String getId() {
 		return id;
@@ -27,5 +28,11 @@ public class UserDetailsDTO extends AppResponse {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public String getProfileImageURL() {
+		return profileImageURL;
+	}
+	public void setProfileImageURL(String profileImageURL) {
+		this.profileImageURL = profileImageURL;
 	}
 }

@@ -20,7 +20,6 @@ import com.example.cms.services.AuthenticationService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -36,12 +35,7 @@ public class AuthController extends TokenAuthenticationController {
 	
 	@Operation(summary = "Register a new user",
 			parameters = {
-		            @Parameter(
-		                name = "X-API-KEY",
-		                in = ParameterIn.HEADER,
-		                required = true,
-		                description = "API key for access"
-		            )
+		            @Parameter(name = "X-API-KEY", description = "API key for access", required = true)
 		        })
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "User registered successfully"),
@@ -54,12 +48,7 @@ public class AuthController extends TokenAuthenticationController {
 
 	@Operation(summary = "Login with mobile and password",
 			parameters = {
-		            @Parameter(
-		                name = "X-API-KEY",
-		                in = ParameterIn.HEADER,
-		                required = true,
-		                description = "API key for access"
-		            )
+					@Parameter(name = "X-API-KEY", description = "API key for access", required = true)
 		        })
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Login successful with token"),
@@ -78,14 +67,10 @@ public class AuthController extends TokenAuthenticationController {
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
 	}
 	
-	@Operation(summary = "Logout by deleting token",
+	@Operation(summary = "Logout by expiring the token",
 			parameters = {
-		            @Parameter(
-		                name = "X-API-KEY",
-		                in = ParameterIn.HEADER,
-		                required = true,
-		                description = "API key for access"
-		            )
+					@Parameter(name = "X-API-KEY", description = "API key for access", required = true),
+					@Parameter(name = "Authorization", description = "Bearer token", required = true)
 		        })
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Logged out successfully"),
