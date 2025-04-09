@@ -8,6 +8,9 @@ import com.example.cms.dao.entities.ChatMember;
 import com.example.cms.dao.entities.User;
 import com.example.cms.dao.repositiries.ChatMemberRepository;
 import com.example.cms.dao.repositiries.ChatRepository;
+import com.example.cms.dto.responses.ChatDetailsObject;
+import com.example.cms.exceptions.ServiceErrorCodes;
+import com.example.cms.exceptions.ServiceException;
 
 import jakarta.transaction.Transactional;
 
@@ -24,9 +27,17 @@ public class ChatService {
     private ChatMemberRepository chatMemberRepository;
 
     @Transactional
-    public void initiateChat(User currentUser, String otherUserMobile) {
+    public ChatDetailsObject initiateChat(User currentUser, String otherUserMobile) {
+        if(currentUser.getMobile().equals(otherUserMobile)) {
+        	throw new ServiceException(ServiceErrorCodes.INVALID_INITIATE_CHAT);
+        }
+        
         User otherUser = userServ.getUserByMobileNumber(otherUserMobile);
-
+        boolean isChatExist = chatMemberRepository.isChatExist(currentUser, otherUser);
+        if(isChatExist) {
+        	throw new ServiceException(ServiceErrorCodes.CHAT_ALREADY_EXIST);
+        }
+        
         // Create chat
         Chat chat = new Chat(false);
         chat = chatRepository.save(chat);
@@ -42,5 +53,26 @@ public class ChatService {
 
         chatMemberRepository.save(member1);
         chatMemberRepository.save(member2);
+        
+        return mapToDTO(chat, otherUser);
+    }
+    
+    public Chat getChat(String id) {
+        return chatRepository.findById(id)
+        		.orElseThrow(() -> new ServiceException(ServiceErrorCodes.DATA_NOT_FOUND, "Chat"));
+    }
+    
+    private ChatDetailsObject mapToDTO(Chat chat, User user) {
+    	ChatDetailsObject dto = new ChatDetailsObject();
+        dto.setId(chat.getId());
+        dto.setGroup(chat.isGroup());
+        if(chat.isGroup()) {
+        	dto.setDisplayName(null);
+        	dto.setGroupId(null);
+        } else {
+        	dto.setDisplayName(user.getName());
+        	dto.setSendMessagePermission(true);
+        }
+        return dto;
     }
 }

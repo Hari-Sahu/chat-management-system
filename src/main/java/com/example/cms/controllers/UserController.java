@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.cms.configs.interceptor.AuthenticationRequired;
 import com.example.cms.dto.requests.UserRegistrationRequest;
+import com.example.cms.dto.responses.AppResponse;
 import com.example.cms.dto.responses.UserDetailsDTO;
 import com.example.cms.services.UserService;
 
@@ -42,7 +43,7 @@ public class UserController extends TokenAuthenticationController {
     })
     @GetMapping
     @AuthenticationRequired
-    public ResponseEntity<UserDetailsDTO> getUser() {
+    public ResponseEntity<AppResponse> getUser() {
         return ResponseEntity.ok(userService.getUserDetails(getUserAccount()));
     }
 
@@ -60,7 +61,7 @@ public class UserController extends TokenAuthenticationController {
     })
     @PutMapping
     @AuthenticationRequired
-    public ResponseEntity<UserDetailsDTO> updateUserName(@RequestBody UserRegistrationRequest dto) {
+    public ResponseEntity<AppResponse> updateUserName(@RequestBody UserRegistrationRequest dto) {
     	dto.validateForUpdate();
     	UserDetailsDTO resBody = userService.updateUser(getUserAccount(), dto.getName());
         return ResponseEntity.ok(resBody);

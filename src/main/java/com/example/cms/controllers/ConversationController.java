@@ -2,15 +2,16 @@ package com.example.cms.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.cms.configs.interceptor.AuthenticationRequired;
-import com.example.cms.dto.requests.ChatInitiateRequest;
-import com.example.cms.dto.responses.ChatDetailsObject;
-import com.example.cms.services.ChatService;
+import com.example.cms.dto.requests.ConversationRequest;
+import com.example.cms.dto.responses.ConversationResponseObject;
+import com.example.cms.services.ConversationService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -21,28 +22,28 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/chats")
-@Tag(name = "Chat", description = "APIs for managing chats")
-public class ChatController extends TokenAuthenticationController {
+@RequestMapping("/chats/{chatId}/conversations")
+@Tag(name = "Conversations", description = "APIs for sending and retrieving chat conversations")
+public class ConversationController extends TokenAuthenticationController {
 
     @Autowired
-    private ChatService chatService;
+    private ConversationService converService;
 
-    @Operation(summary = "Initiate Chat",
-            description = "Initiates a one-to-one chat with another user using their mobile number.",
+    @Operation(summary = "Send a new conversation message",
+            description = "Send a new message within a chat",
     parameters = {
 			@Parameter(name = "X-API-KEY", description = "API key for access", required = true),
 			@Parameter(name = "Authorization", description = "Bearer token", required = true)
         })
     @ApiResponses(value = {
-    		@ApiResponse(responseCode = "200", description = "Chat initiated successfully"),
-            @ApiResponse(responseCode = "404", description = "User not found", content = @Content),
+    		@ApiResponse(responseCode = "200", description = "Message sent successfully"),
+            @ApiResponse(responseCode = "404", description = "Chat not found", content = @Content),
             @ApiResponse(responseCode = "400", description = "Invalid input", content = @Content)
     })
-    @PostMapping("/initiate")
+    @PostMapping
     @AuthenticationRequired
-    public ResponseEntity<ChatDetailsObject> initiateChat(@RequestBody @Valid ChatInitiateRequest reqDTO) {
-    	ChatDetailsObject res = chatService.initiateChat(getUserAccount(), reqDTO.getMobileNumber());
+    public ResponseEntity<ConversationResponseObject> sendConversation(@RequestBody @Valid ConversationRequest reqDTO, @PathVariable String chatId) {
+    	ConversationResponseObject res = converService.sendMessage(getUserAccount(), chatId, reqDTO.getMessage());
         return ResponseEntity.ok(res);
     }
 }

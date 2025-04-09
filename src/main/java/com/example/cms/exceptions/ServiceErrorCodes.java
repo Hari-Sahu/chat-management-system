@@ -6,6 +6,8 @@ public enum ServiceErrorCodes {
 	DATA_NOT_FOUND("DATA_NOT_FOUND", 2002, "%s data not found"),
 	MOBILE_NUMBER_EXIST("MOBILE_NUMBER_EXIST", 2003, "Mobile number already registered"),
 	ALREADY_LOGIN("ALREADY_LOGIN", 2004, "User is already logged in with an active session."),
+	INVALID_INITIATE_CHAT("INVALID_INITIATE_CHAT", 2005, "Cannot initiate chat with yourself."),
+	CHAT_ALREADY_EXIST("CHAT_ALREADY_EXIST", 2006, "Chat already exists between the given users"),
 	;
 	private String message;
 	private int errorCode;

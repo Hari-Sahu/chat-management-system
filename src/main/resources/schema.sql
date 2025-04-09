@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS group_users (
 );
 
 -- Conversation Table
-CREATE TABLE IF NOT EXISTS conversation (
+CREATE TABLE IF NOT EXISTS conversations (
     id VARCHAR(24) PRIMARY KEY,
     chat_id VARCHAR(24) NOT NULL REFERENCES chats(id),
     message TEXT,
@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS conversation (
   	updated_on TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
---DROP TABLE conversation;
+--DROP TABLE conversations;
 --DROP TABLE group_users;
 --DROP TABLE chat_groups;
 --DROP TABLE chat_members;
