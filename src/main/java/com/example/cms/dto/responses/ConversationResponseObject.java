@@ -12,7 +12,7 @@ public class ConversationResponseObject {
 
 	private String id;
 	private String message;
-	private String senderName;
+	private MessageSenderObject senderName;
 	
 	@JsonFormat(pattern = "dd MMM yyyy")
     private LocalDate createdAtDate;
@@ -32,11 +32,11 @@ public class ConversationResponseObject {
 	public void setMessage(String message) {
 		this.message = message;
 	}
-	public String getSenderName() {
+	public MessageSenderObject getSender() {
 		return senderName;
 	}
-	public void setSenderName(String senderName) {
-		this.senderName = senderName;
+	public void setSender(MessageSenderObject sender) {
+		this.senderName = sender;
 	}
 	public LocalDate getCreatedAtDate() {
 		return createdAtDate;

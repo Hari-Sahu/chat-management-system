@@ -9,8 +9,17 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @JsonInclude(Include.NON_NULL)
 public class ChatListDTO extends AppResponse {
 
+	private Integer etag;
 	private List<ChatDetailsObject> chats = new ArrayList<>();
 	
+	public Integer getEtag() {
+		return etag;
+	}
+
+	public void setEtag(Integer etag) {
+		this.etag = etag;
+	}
+
 	public List<ChatDetailsObject> getChats() {
 		return chats;
 	}

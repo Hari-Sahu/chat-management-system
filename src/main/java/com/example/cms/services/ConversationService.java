@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,9 @@ import com.example.cms.dao.entities.Chat;
 import com.example.cms.dao.entities.Conversation;
 import com.example.cms.dao.entities.User;
 import com.example.cms.dao.repositiries.ConversationRepository;
+import com.example.cms.dto.responses.ConversationListDTO;
 import com.example.cms.dto.responses.ConversationResponseObject;
+import com.example.cms.dto.responses.MessageSenderObject;
 
 import jakarta.transaction.Transactional;
 
@@ -31,14 +34,26 @@ public class ConversationService {
 		Chat chat = chatService.getChat(chatId);
 		Conversation conversation = new Conversation(chat, message, user);
 		converRepo.save(conversation);
+		chatService.updateChatTime(chat); //Update the chat's updated_at timestamp to reflect the most recent activity in the list
 		return mapToDTO(conversation);
+	}
+	
+	public ConversationListDTO getChatMessages(String chatId) {
+		Chat chat = chatService.getChat(chatId);
+		List<Conversation> conversationList = converRepo.findByChatOrderByCreatedOnDesc(chat);
+		ConversationListDTO res = new ConversationListDTO();
+		conversationList.forEach(conver -> res.addConversation(mapToDTO(conver)));
+		return res;
 	}
     
     private ConversationResponseObject mapToDTO(Conversation conver) {
     	ConversationResponseObject dto = new ConversationResponseObject();
         dto.setId(conver.getId());
         dto.setMessage(conver.getMessage());
-        dto.setSenderName(conver.getSender().getName());
+        MessageSenderObject sender = new MessageSenderObject();
+        sender.setId(conver.getSender().getId());
+        sender.setName(conver.getSender().getName());
+        dto.setSender(sender);
         
         // Convert to Instant
         Instant instant;

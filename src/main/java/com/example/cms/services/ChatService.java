@@ -1,5 +1,7 @@
 package com.example.cms.services;
 
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -60,6 +62,11 @@ public class ChatService {
     public Chat getChat(String id) {
         return chatRepository.findById(id)
         		.orElseThrow(() -> new ServiceException(ServiceErrorCodes.DATA_NOT_FOUND, "Chat"));
+    }
+    
+    public void updateChatTime(Chat chat) {
+    	chat.setUpdatedOn(new Date());
+    	chatRepository.save(chat);
     }
     
     private ChatDetailsObject mapToDTO(Chat chat, User user) {

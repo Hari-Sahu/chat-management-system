@@ -9,5 +9,5 @@ import com.example.cms.dao.entities.Conversation;
 
 public interface ConversationRepository extends JpaRepository<Conversation, String> {
 	
-	List<Conversation> findByChat(Chat chat);
+	List<Conversation> findByChatOrderByCreatedOnDesc(Chat chat);
 }
