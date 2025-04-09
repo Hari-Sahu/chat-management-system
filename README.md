@@ -48,7 +48,7 @@ configure the database information in application.properties under src/main/reso
 mvn clean install
 
 ### 4. Run the Application
-mvn clean install
+java -Dspring.profiles.active=local -jar target/chat-management-system-1.0.0.jar
 
 
 ## 🛠️ Testing the API
