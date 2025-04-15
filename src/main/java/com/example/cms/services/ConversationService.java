@@ -17,6 +17,8 @@ import com.example.cms.dao.repositiries.ConversationRepository;
 import com.example.cms.dto.responses.ConversationListDTO;
 import com.example.cms.dto.responses.ConversationResponseObject;
 import com.example.cms.dto.responses.MessageSenderObject;
+import com.example.cms.exceptions.ServiceErrorCodes;
+import com.example.cms.exceptions.ServiceException;
 
 import jakarta.transaction.Transactional;
 
@@ -71,4 +73,15 @@ public class ConversationService {
         
         return dto;
     }
+    
+    public ConversationResponseObject updateMessage(String chatId, String id, String message) {
+		chatService.getChat(chatId);
+		
+		Conversation conversation = converRepo.findById(id)
+		.orElseThrow(() -> new ServiceException(ServiceErrorCodes.DATA_NOT_FOUND, "Conversation"));
+		
+		conversation.setMessage(message);
+		converRepo.save(conversation);
+		return mapToDTO(conversation);
+	}
 }
