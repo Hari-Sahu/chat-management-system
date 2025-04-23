@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -65,4 +66,23 @@ public class ConversationController extends TokenAuthenticationController {
     public ResponseEntity<AppResponse> getConversations(@PathVariable String chatId, @RequestParam(required = false) Long etag) {
 		return ResponseEntity.ok(converService.getChatMessages(chatId));
     }
+	
+	@Operation(summary = "Update a conversation message",
+			description = "Updates the content of a specific conversation message identified by its ID.",
+			parameters = {
+					@Parameter(name = "X-API-KEY", description = "API key for access", required = true),
+					@Parameter(name = "Authorization", description = "Bearer token", required = true)
+			})
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Message updated successfully"),
+			@ApiResponse(responseCode = "404", description = "Message not found"),
+			@ApiResponse(responseCode = "400", description = "Invalid input data")
+	})
+	@PutMapping("{id}")
+	@AuthenticationRequired
+	public ResponseEntity<String> updateConversationMessage(@PathVariable String chatId, @PathVariable String id,
+			@RequestBody @Valid ConversationRequest reqDTO) {
+		converService.updateMessage(chatId, id, reqDTO.getMessage());
+		return ResponseEntity.ok("Message updated successfully");
+	}
 }

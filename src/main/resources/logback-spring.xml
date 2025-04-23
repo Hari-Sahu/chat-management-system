@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 	<springProperty scope="context" name="file.name" source="spring.application.name" />
-	<springProperty scope="context" name="random.val" source="random.value" />
     <property name="LOGS" value="../cms-logs" />
 
     <appender name="Console"
@@ -15,7 +14,7 @@
 
     <appender name="RollingFile"
         class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOGS}/${file.name}-${random.val}.log</file>
+        <file>${LOGS}/${file.name}.log</file>
         <encoder
             class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>%d %p %C [%t] %m%n</Pattern>
@@ -24,11 +23,11 @@
         <rollingPolicy
             class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- rollover daily and when the file reaches 10 MegaBytes -->
-            <fileNamePattern>${LOGS}/archived/${file.name}-${random.val}-%d{yyyy-MM-dd}.%i.log
+            <fileNamePattern>${LOGS}/archived/${file.name}-%d{yyyy-MM-dd}.%i.log.zip
             </fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy
                 class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>100MB</maxFileSize>
+                <maxFileSize>5MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
         </rollingPolicy>
     </appender>

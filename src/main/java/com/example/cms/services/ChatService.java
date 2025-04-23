@@ -40,9 +40,7 @@ public class ChatService {
         	throw new ServiceException(ServiceErrorCodes.CHAT_ALREADY_EXIST);
         }
         
-        // Create chat
-        Chat chat = new Chat(false);
-        chat = chatRepository.save(chat);
+        Chat chat = createChat(false);
 
         // Add both users to chat_members
         ChatMember member1 = new ChatMember();
@@ -57,6 +55,12 @@ public class ChatService {
         chatMemberRepository.save(member2);
         
         return mapToDTO(chat, otherUser);
+    }
+    
+    // Create chat
+    public Chat createChat(boolean isGroup) {
+        Chat chat = new Chat(isGroup);
+        return chatRepository.save(chat);
     }
     
     public Chat getChat(String id) {
