@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Ignore local Spring config in resources
+src/main/resources/application-local.yml
+src/main/resources/application-local.properties
