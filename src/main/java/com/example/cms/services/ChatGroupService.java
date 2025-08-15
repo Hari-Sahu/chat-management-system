@@ -33,6 +33,9 @@ public class ChatGroupService {
 	@Autowired
     private GroupUserRepository grpUserRepo;
 	
+	@Autowired
+    private ChatMemberService chatMemberService;
+	
 	@Transactional
 	public String createGroup(User user, ChatGroupRequest reqDTO) {
 		List<User> grpMembers = new ArrayList<>();
@@ -49,7 +52,12 @@ public class ChatGroupService {
 		chatGrpRepo.save(chatGrp);
 		
 		addUserInGroup(chatGrp, user, GroupUserRole.ADMIN);
-		grpMembers.forEach(usrM -> addUserInGroup(chatGrp, usrM, GroupUserRole.NON_ADMIN));
+		chatMemberService.createChatMember(chat, user, null);
+		
+		grpMembers.forEach(usrM -> {
+			addUserInGroup(chatGrp, usrM, GroupUserRole.NON_ADMIN);
+			chatMemberService.createChatMember(chat, usrM, null);
+		});
 		
 		return "Chat group created successfully";
 	}

@@ -6,9 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.cms.dao.entities.Chat;
-import com.example.cms.dao.entities.ChatMember;
 import com.example.cms.dao.entities.User;
-import com.example.cms.dao.repositiries.ChatMemberRepository;
 import com.example.cms.dao.repositiries.ChatRepository;
 import com.example.cms.dto.responses.ChatDetailsObject;
 import com.example.cms.exceptions.ServiceErrorCodes;
@@ -26,7 +24,7 @@ public class ChatService {
     private ChatRepository chatRepository;
 
     @Autowired
-    private ChatMemberRepository chatMemberRepository;
+    private ChatMemberService chatMemberService;
 
     @Transactional
     public ChatDetailsObject initiateChat(User currentUser, String otherUserMobile) {
@@ -35,24 +33,14 @@ public class ChatService {
         }
         
         User otherUser = userServ.getUserByMobileNumber(otherUserMobile);
-        boolean isChatExist = chatMemberRepository.isChatExist(currentUser, otherUser);
+        boolean isChatExist = chatMemberService.isChatExist(currentUser, otherUser);
         if(isChatExist) {
         	throw new ServiceException(ServiceErrorCodes.CHAT_ALREADY_EXIST);
         }
         
         Chat chat = createChat(false);
-
-        // Add both users to chat_members
-        ChatMember member1 = new ChatMember();
-        member1.setChat(chat);
-        member1.setUser(currentUser);
-
-        ChatMember member2 = new ChatMember();
-        member2.setChat(chat);
-        member2.setUser(otherUser);
-
-        chatMemberRepository.save(member1);
-        chatMemberRepository.save(member2);
+        chatMemberService.createChatMember(chat, currentUser, otherUser.getName());
+        chatMemberService.createChatMember(chat, otherUser, currentUser.getName());
         
         return mapToDTO(chat, otherUser);
     }
